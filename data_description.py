@@ -1,4 +1,5 @@
 import pandas as pd
+from collections import Counter
 
 #filename
 filename = "data/emergent.csv"
@@ -38,4 +39,13 @@ print(page_position_list)
 #total count of each type of stance
 page_position_count = df['page_position'].value_counts();
 print(page_position_count)
+
+#unique vocab
+claim_vocab = Counter(" ".join(df['claim'].values.tolist()).split(" ")).items()
+print('unique claim vocab length', len(claim_vocab))
+
+body_vocab = Counter(" ".join(df['body'].values.tolist()).split(" ")).items()
+print('unique body vocab length', len(body_vocab))
+
+
 
