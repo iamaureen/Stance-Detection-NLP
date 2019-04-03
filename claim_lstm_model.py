@@ -7,9 +7,10 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.layers import Embedding
 from keras.layers import Dense, Flatten, LSTM, Conv1D, MaxPooling1D, Dropout, Activation
+from keras import losses
 
 #filename
-filename = "data/emergent.csv"
+filename = "data/emergent_without_null.csv"
 
 
 fields = ['claim','claim_label','body','page_headline','page_position']
@@ -24,11 +25,11 @@ print(len(claim_content));
 page_position = df['page_position'];
 print(len(page_position));
 
-df.loc[df['page_position'] == 'for', 'page_position'] = 1
-df.loc[df['page_position'] == 'against', 'page_position'] = 2
-df.loc[df['page_position'] == 'observing', 'page_position'] = 3
-df.loc[df['page_position'] == 'ignoring', 'page_position'] = 4
-df.loc[df['page_position'] == 'null', 'page_position'] = 5
+df.loc[df['page_position'] == 'for', 'page_position'] = 0
+df.loc[df['page_position'] == 'against', 'page_position'] = 1
+df.loc[df['page_position'] == 'observing', 'page_position'] = 2
+df.loc[df['page_position'] == 'ignoring', 'page_position'] = 3
+df.loc[df['page_position'] == 'nan', 'page_position'] = 5
 
 
 page_position_list = df.page_position.unique()
@@ -73,15 +74,19 @@ for word, i in t.word_index.items():
 
 ## create the LSTM model
 model_lstm = Sequential()
-model_lstm.add(Embedding(vocab_size, 100, input_length=24, weights=[embedding_matrix], trainable=False))
+model_lstm.add(Embedding(vocab_size, 100, input_length=max_length, weights=[embedding_matrix], trainable=False))
 # model_lstm.add(Dropout(0.2))
 # model_lstm.add(Conv1D(64, 5, activation='relu'))
 # model_lstm.add(MaxPooling1D(pool_size=4))
 model_lstm.add(LSTM(100))
-model_lstm.add(Dense(1, activation='sigmoid'))
-model_lstm.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+# activation function = softmax instead of sigmoid since multiclass, sigmoid is for binary class
+# First parameter of Dense is the unit = number of labels  https://keras.io/layers/core/
+model_lstm.add(Dense(4, activation='softmax'))
+# use sparse_categorical_crossentropy instead of binary_crossentropy, because multi class; also the class labels
+# needs to start from 0.
+model_lstm.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 ## Fit train data
-model_lstm.fit(padded_claim_content, page_position, validation_split=0.4, epochs = 3)
+model_lstm.fit(padded_claim_content, page_position, validation_split=0.4, epochs = 10)
 
 # evaluate the model
 loss, accuracy = model_lstm.evaluate(padded_claim_content, page_position, verbose=0)
