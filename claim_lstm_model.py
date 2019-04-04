@@ -83,10 +83,10 @@ def get_claim_lstm_model():
 	model_lstm.add(LSTM(100))
 	# activation function = softmax instead of sigmoid since multiclass, sigmoid is for binary class
 	# First parameter of Dense is the unit = number of labels  https://keras.io/layers/core/
-	model_lstm.add(Dense(4, activation='softmax'))
+	#model_lstm.add(Dense(4, activation='relu'))
 	# use sparse_categorical_crossentropy instead of binary_crossentropy, because multi class; also the class labels
 	# needs to start from 0.
-	model_lstm.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+	#model_lstm.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 	## Fit train data
 	#model_lstm.fit(padded_claim_content, page_position, validation_split=0.4, epochs = 1)
 
