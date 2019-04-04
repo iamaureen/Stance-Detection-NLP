@@ -88,10 +88,10 @@ def get_body_lstm_model():
 	# needs to start from 0.
 	model_lstm.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 	## Fit train data
-	model_lstm.fit(padded_body_content, page_position, validation_split=0.4, epochs = 10)
+	#model_lstm.fit(padded_body_content, page_position, validation_split=0.4, epochs = 1)
 
 	# evaluate the model
-	loss, accuracy = model_lstm.evaluate(padded_body_content, page_position, verbose=0)
-	print('Accuracy: %f' % (accuracy*100))
+	# loss, accuracy = model_lstm.evaluate(padded_body_content, page_position, verbose=0)
+	# print('Accuracy: %f' % (accuracy*100))
 
 	return padded_body_content, model_lstm;
