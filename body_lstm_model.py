@@ -94,4 +94,9 @@ def get_body_lstm_model():
 	# loss, accuracy = model_lstm.evaluate(padded_body_content, page_position, verbose=0)
 	# print('Accuracy: %f' % (accuracy*100))
 
-	return padded_body_content, model_lstm;
+	# testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)
+	test_txt = ["Regular fast food eating linked to fertility issues in women"]
+	seq = t.texts_to_sequences(test_txt)
+	test_body_padded = pad_sequences(seq, maxlen=max_length)
+
+	return padded_body_content, model_lstm,test_body_padded;
