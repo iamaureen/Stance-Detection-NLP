@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.utils import shuffle
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
@@ -46,8 +47,6 @@ dummy = DummyClassifier(strategy="most_frequent") #most_frequent
 vectorizer = CountVectorizer(analyzer = "word", tokenizer = None, preprocessor = None, stop_words = "english")
 features_bow_claim = vectorizer.fit_transform(df.claim).toarray()
 features_bow_body = vectorizer.fit_transform(df.body).toarray()
-labels = df.page_position
-labels=labels.astype('int')
 print('features_bow_claim',features_bow_claim.shape)
 print('features_bow_body',features_bow_body.shape)
 
@@ -55,11 +54,24 @@ print('features_bow_body',features_bow_body.shape)
 features_bow_combined = np.concatenate((features_bow_claim, features_bow_body), axis = 1)
 print('features_bow_combined',features_bow_combined.shape)
 
+#tf-idf
+tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l1', encoding='latin-1', ngram_range=(1,3), stop_words='english')
+features_tfidf_claim = tfidf.fit_transform(df.claim).toarray();
+features_tfidf_body = tfidf.fit_transform(df.body).toarray();
+labels = df.page_position
+labels=labels.astype('int')
+print('features_bow_claim',features_tfidf_claim.shape)
+print('features_bow_body',features_tfidf_body.shape)
+
+# concataned two bag  of words features
+features_tfidf_combined = np.concatenate((features_tfidf_claim, features_tfidf_body), axis = 1)
+print('features_bow_combined',features_bow_combined.shape)
+
 
 
 print("---------80-20 training----------")
 # 80-20 training
-X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(features_bow_combined, labels, df.index, test_size=0.2, random_state=0)
+X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(features_tfidf_combined, labels, df.index, test_size=0.2, random_state=0)
 models[0].fit(X_train, y_train)
 y_pred = models[0].predict(X_test)
 
@@ -82,14 +94,14 @@ print("---------cross validation----------")
 
 CV = 5
 
-accuracies = cross_val_score(models[0], features_bow_combined, labels, scoring='accuracy', cv=CV)
+accuracies = cross_val_score(models[0], features_tfidf_combined, labels, scoring='accuracy', cv=CV)
 print("Accuracy on the current dataset(cross validation rule(logistic)): {:.2f}".format(accuracies.mean()*100))
 
-accuracies = cross_val_score(models[0], features_bow_combined, labels, scoring='f1_macro', cv=CV)
+accuracies = cross_val_score(models[0], features_tfidf_combined, labels, scoring='f1_macro', cv=CV)
 print("F1 Measure on the current dataset(cross validation rule(logistic)): {:.2f}".format(accuracies.mean()))
 
-accuracies = cross_val_score(DummyClassifier(strategy="most_frequent"), features_bow_combined, labels, scoring='accuracy', cv=CV)
+accuracies = cross_val_score(DummyClassifier(strategy="most_frequent"), features_tfidf_combined, labels, scoring='accuracy', cv=CV)
 print("Accuracy on the current dataset(cross validation rule (dummy)): {:.2f}".format(accuracies.mean()*100))
 
-accuracies = cross_val_score(DummyClassifier(strategy="most_frequent"), features_bow_combined, labels, scoring='f1_macro', cv=CV)
+accuracies = cross_val_score(DummyClassifier(strategy="most_frequent"), features_tfidf_combined, labels, scoring='f1_macro', cv=CV)
 print("F1 Measure on the current dataset(cross validation rule (dummy)): {:.2f}".format(accuracies.mean()))
