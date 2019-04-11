@@ -94,7 +94,8 @@ def get_claim_lstm_model():
 	# loss, accuracy = model_lstm.evaluate(padded_claim_content, page_position, verbose=0)
 	# print('Accuracy: %f' % (accuracy*100))
 
-	test_txt = ["Regular fast food eating linked to fertility issues in women"]
+	test_txt = ["Regular fast food eating linked to fertility issues in women",
+				"TBS speeds up Seinfeld episodes to fit in more commercials"]
 	seq = t.texts_to_sequences(test_txt)
 	test_claim_padded = pad_sequences(seq, maxlen=max_length)
 

@@ -95,7 +95,8 @@ def get_body_lstm_model():
 	# print('Accuracy: %f' % (accuracy*100))
 
 	# testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)
-	test_txt = ["Regular fast food eating linked to fertility issues in women"]
+	test_txt = ["Regular fast food eating linked to fertility issues in women",
+				"On Feb. 15 Reddit user Electrorocket posted a link to a YouTube video that allegedly compares the speed of a regular Seinfeld episode with one broadcast on TBS. The video has been online since Sept. 2013, but the post on Reddit (reddit.com/r/television/comments/2vwgk9/tbs_speeds_up_seinfeld_75_to_gain_an_extra_2) attracted new interest and media coverage. The video was also posted to AVSForum.com around the same time, with more details from the user. As of now, it's not clear whether the claim is true, though it has been confirmed that other stations speed up reruns. We will seek confirmation from TBS."]
 	seq = t.texts_to_sequences(test_txt)
 	test_body_padded = pad_sequences(seq, maxlen=max_length)
 

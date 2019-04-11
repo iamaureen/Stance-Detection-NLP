@@ -31,15 +31,22 @@ final_model.fit([padded_claim_content, padded_body_content], label, validation_s
 
 print(final_model.summary())
 
+# get the intermediate concatenation layer vector with dimension 200
+layer_name = 'concatenate_1'
+intermediate_layer_model = Model(inputs=final_model.input,outputs=final_model.get_layer(layer_name).output)
+pred = intermediate_layer_model.predict([test_claim_padded,test_body_padded])
+
+print(pred[1])
+
 loss, accuracy = final_model.evaluate([padded_claim_content, padded_body_content], label, verbose=0)
 print('Accuracy: %f' % (accuracy*100))
 
 #testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)
 
 #prediction in terms of probability and output the predicted class
-pred = final_model.predict([test_claim_padded,test_body_padded])
-labels = ['0', '1', '2', '3']
-print(pred, labels[np.argmax(pred)])
+# pred = final_model.predict([test_claim_padded,test_body_padded])
+# labels = ['0', '1', '2', '3']
+# print(pred, labels[np.argmax(pred)])
 
 
 
