@@ -9,8 +9,8 @@ import body_lstm_model as bm
 
 
 def combine_lstm():
-    padded_claim_content, claim_model, label, test_claim_padded,claim_tokenizer = cm.get_claim_lstm_model();
-    padded_body_content, body_model, test_body_padded, body_tokenizer = bm.get_body_lstm_model();
+    padded_claim_content, claim_model, label,claim_tokenizer = cm.get_claim_lstm_model();
+    padded_body_content, body_model, body_tokenizer = bm.get_body_lstm_model();
 
     # #https://stackoverflow.com/questions/51075666/how-to-implement-merge-from-keras-layers
     # merged_output = add([claim_model.output, body_model.output])
