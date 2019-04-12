@@ -7,46 +7,50 @@ import claim_lstm_model as cm
 import body_lstm_model as bm
 
 
-padded_claim_content, claim_model, label, test_claim_padded = cm.get_claim_lstm_model();
-padded_body_content, body_model, test_body_padded = bm.get_body_lstm_model();
 
-# #https://stackoverflow.com/questions/51075666/how-to-implement-merge-from-keras-layers
-# merged_output = add([claim_model.output, body_model.output])
-merged_output = concatenate([claim_model.output, body_model.output])
+def combine_lstm():
+    padded_claim_content, claim_model, label, test_claim_padded,claim_tokenizer = cm.get_claim_lstm_model();
+    padded_body_content, body_model, test_body_padded, body_tokenizer = bm.get_body_lstm_model();
 
-model_combined = Sequential()
-model_combined.add(Activation('relu'))
-model_combined.add(Dense(256))
-model_combined.add(Activation('relu'))
-model_combined.add(Dense(4))
-model_combined.add(Activation('softmax'))
+    # #https://stackoverflow.com/questions/51075666/how-to-implement-merge-from-keras-layers
+    # merged_output = add([claim_model.output, body_model.output])
 
-final_model = Model([claim_model.input, body_model.input], model_combined(merged_output))
+    merged_output = concatenate([claim_model.output, body_model.output])
 
-final_model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model_combined = Sequential()
+    model_combined.add(Activation('relu'))
+    model_combined.add(Dense(256))
+    model_combined.add(Activation('relu'))
+    model_combined.add(Dense(4))
+    model_combined.add(Activation('softmax'))
 
-# print(final_model.summary())
+    final_model = Model([claim_model.input, body_model.input], model_combined(merged_output))
 
-final_model.fit([padded_claim_content, padded_body_content], label, validation_split=0.4, epochs=10)
+    final_model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-print(final_model.summary())
+    # print(final_model.summary())
 
-# get the intermediate concatenation layer vector with dimension 200
-layer_name = 'concatenate_1'
-intermediate_layer_model = Model(inputs=final_model.input,outputs=final_model.get_layer(layer_name).output)
-pred = intermediate_layer_model.predict([test_claim_padded,test_body_padded])
+    final_model.fit([padded_claim_content, padded_body_content], label, validation_split=0.4, epochs=10)
 
-print(pred[1])
+    print(final_model.summary())
 
-loss, accuracy = final_model.evaluate([padded_claim_content, padded_body_content], label, verbose=0)
-print('Accuracy: %f' % (accuracy*100))
+    # # get the intermediate concatenation layer vector with dimension 200
+    # layer_name = 'concatenate_1'
+    # intermediate_layer_model = Model(inputs=final_model.input,outputs=final_model.get_layer(layer_name).output)
+    # pred = intermediate_layer_model.predict([test_claim_padded,test_body_padded])
+    # print(pred.shape)
 
-#testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)
+    loss, accuracy = final_model.evaluate([padded_claim_content, padded_body_content], label, verbose=0)
+    print('Accuracy: %f' % (accuracy*100))
 
-#prediction in terms of probability and output the predicted class
-# pred = final_model.predict([test_claim_padded,test_body_padded])
-# labels = ['0', '1', '2', '3']
-# print(pred, labels[np.argmax(pred)])
+    #testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)
+
+    #prediction in terms of probability and output the predicted class
+    # pred = final_model.predict([test_claim_padded,test_body_padded])
+    # labels = ['0', '1', '2', '3']
+    # print(pred, labels[np.argmax(pred)])
+
+    return claim_tokenizer, body_tokenizer, final_model;
 
 
 

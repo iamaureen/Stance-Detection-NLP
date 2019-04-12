@@ -99,4 +99,4 @@ def get_claim_lstm_model():
 	seq = t.texts_to_sequences(test_txt)
 	test_claim_padded = pad_sequences(seq, maxlen=max_length)
 
-	return padded_claim_content, model_lstm, page_position, test_claim_padded;
+	return padded_claim_content, model_lstm, page_position, test_claim_padded,t;

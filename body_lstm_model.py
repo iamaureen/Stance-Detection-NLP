@@ -100,4 +100,5 @@ def get_body_lstm_model():
 	seq = t.texts_to_sequences(test_txt)
 	test_body_padded = pad_sequences(seq, maxlen=max_length)
 
-	return padded_body_content, model_lstm,test_body_padded;
+	return padded_body_content, model_lstm,test_body_padded,t;
+
