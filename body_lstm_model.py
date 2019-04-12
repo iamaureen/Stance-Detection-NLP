@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 from numpy import asarray
 from numpy import zeros
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Sequential
-from keras.layers import Embedding
-from keras.layers import Dense, Flatten, LSTM, Conv1D, MaxPooling1D, Dropout, Activation
-from keras import losses
+from tensorflow.python.keras.preprocessing.text import Tokenizer
+from tensorflow.python.keras.preprocessing.sequence import pad_sequences
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Embedding
+from tensorflow.python.keras.layers import Dense, Flatten, LSTM, Conv1D, MaxPooling1D, Dropout, Activation
+from tensorflow.python.keras import losses
 
 def get_body_lstm_model():
 

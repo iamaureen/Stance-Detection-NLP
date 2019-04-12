@@ -1,6 +1,6 @@
-from keras.models import Model, Sequential
-from keras.layers import merge, Activation, Dense, concatenate
-from keras.layers import add
+from tensorflow.python.keras.models import Model, Sequential
+from tensorflow.python.keras.layers import Activation, Dense, concatenate
+from tensorflow.python.keras.layers import add
 import numpy as np
 
 import claim_lstm_model as cm
