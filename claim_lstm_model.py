@@ -59,7 +59,7 @@ def get_claim_lstm_model():
 	print(padded_claim_content)
 	# load the whole embedding into memory
 	embeddings_index = dict()
-	f = open('/Users/iamaureen/Documents/glove.6B/glove.6B.100d.txt')
+	f = open('data/glove.6B.100d.txt')
 	for line in f:
 		values = line.split()
 		word = values[0]

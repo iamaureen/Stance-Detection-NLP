@@ -6,6 +6,9 @@ import numpy as np
 import claim_lstm_model as cm
 import body_lstm_model as bm
 
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
 
 padded_claim_content, claim_model, label, test_claim_padded = cm.get_claim_lstm_model();
 padded_body_content, body_model, test_body_padded = bm.get_body_lstm_model();
