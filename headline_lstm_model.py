@@ -9,6 +9,15 @@ from keras.layers import Embedding
 from keras.layers import Dense, Flatten, LSTM, Conv1D, MaxPooling1D, Dropout, Activation
 from keras import losses
 
+def data_preprocessing(source):
+    source = source.str.replace('[^A-Za-z]',' ')
+    #data['description'] = data['description'].str.replace('\W+',' ')
+    source = source.str.lower()
+    source = source.str.replace("\s\s+" , " ")
+    source = source.str.replace('\s+[a-z]{1,2}(?!\S)',' ')
+    source = source.str.replace("\s\s+" , " ")
+    return source
+
 def get_body_lstm_model():
 
 	#filename
@@ -19,11 +28,13 @@ def get_body_lstm_model():
 
 	df = pd.read_csv(filename, usecols=fields)
 
+	#df['page_headline'] = df['page_headline'].apply(lambda row: data_preprocessing(row))
 	#todo remove duplicate claim rows and corresponding page position too
-	body_content = df['body'];
-	print(len(body_content));
+	page_headline_content = df['page_headline'].astype(str);
+	print(len(page_headline_content));
 
-	#labels
+
+	#labelspage
 	page_position = df['page_position'];
 	print(len(page_position));
 
@@ -39,11 +50,11 @@ def get_body_lstm_model():
 
 	# prepare tokenizer
 	t = Tokenizer()
-	t.fit_on_texts(body_content)
+	t.fit_on_texts(page_headline_content)
 	vocab_size = len(t.word_index) + 1
 
 	# integer encode the documents
-	encoded_docs = t.texts_to_sequences(body_content)
+	encoded_docs = t.texts_to_sequences(page_headline_content)
 	# print(encoded_docs)
 
 	# https://stackoverflow.com/questions/34757703/how-to-get-the-longest-length-string-integer-float-from-a-pandas-column-when-the?rq=1
@@ -55,8 +66,8 @@ def get_body_lstm_model():
 	max_length_str = df.loc[body_field_length.idxmax(), 'body'];
 	max_length = len(max_length_str.split());
 
-	padded_body_content = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
-	print(padded_body_content)
+	padded_page_headline_content = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
+	print(padded_page_headline_content)
 	# load the whole embedding into memory
 	embeddings_index = dict()
 	f = open('/Users/iamaureen/Documents/glove.6B/glove.6B.100d.txt')
@@ -100,5 +111,5 @@ def get_body_lstm_model():
 	# seq = t.texts_to_sequences(test_txt)
 	# test_body_padded = pad_sequences(seq, maxlen=max_length)
 
-	return padded_body_content, model_lstm,t;
+	return padded_page_headline_content, model_lstm,t;
 

@@ -4,7 +4,7 @@ from keras.layers import add
 import numpy as np
 
 import claim_lstm_model as cm
-import body_lstm_model as bm
+import headline_lstm_model as bm
 
 
 
