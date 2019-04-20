@@ -5,13 +5,34 @@ import numpy as np
 
 import claim_lstm_model as cm
 import body_lstm_model as bm
+import prepare_data as pd
 
 import os
 
 os.environ["CUDA_VISIBLE_DEVICES"]="3"
 
-padded_claim_content, claim_model, label, test_claim_padded = cm.get_claim_lstm_model();
-padded_body_content, body_model, test_body_padded = bm.get_body_lstm_model();
+padded_claim_content, claim_model, labels, test_claim_padded = cm.get_claim_lstm_model();
+'''
+This line is for the case that we were using body content and not haedline but it seems that body we nee to use
+body headline because body is the same even for different news from different domains
+'''
+#padded_body_content, body_model, test_body_padded = bm.get_body_lstm_model();
+
+padded_headline_content, body_model, test_body_padded = bm.get_body_lstm_model();
+
+print('strat preparing data split')
+
+padded_claim_content = np.array(padded_claim_content)
+padded_headline_content = np.array(padded_headline_content)
+labels = np.array(labels)
+
+pd.prepare_data(padded_claim_content, padded_headline_content, labels)
+
+print('finish preparing data split')
+
+# Note: test_claim_padded is just one sample test and we need to prepare the test, validation and train 
+# by the prepare_data function which we have prepared
+
 
 # #https://stackoverflow.com/questions/51075666/how-to-implement-merge-from-keras-layers
 # merged_output = add([claim_model.output, body_model.output])
@@ -30,7 +51,9 @@ final_model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', me
 
 # print(final_model.summary())
 
-final_model.fit([padded_claim_content, padded_body_content], label, validation_split=0.4, epochs=10)
+print('dimension of padded_claim_content is %s' %str(padded_claim_content.shape))
+
+final_model.fit([padded_claim_content, padded_headline_content], label, validation_split=0.4, epochs=10)
 
 print(final_model.summary())
 
@@ -41,7 +64,10 @@ pred = intermediate_layer_model.predict([test_claim_padded,test_body_padded])
 
 print(pred[1])
 
-loss, accuracy = final_model.evaluate([padded_claim_content, padded_body_content], label, verbose=0)
+
+#print('dimension of padded_claim_content is %s' %str(padded_claim_content.shape))
+
+loss, accuracy = final_model.evaluate([padded_claim_content, padded_headline_content], label, verbose=0)
 print('Accuracy: %f' % (accuracy*100))
 
 #testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)

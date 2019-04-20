@@ -20,6 +20,8 @@ def get_body_lstm_model():
 	df = pd.read_csv(filename, usecols=fields)
 
 	#todo remove duplicate claim rows and corresponding page position too
+	headline = df['page_headline'].astype(str);
+	#print('headline is %s ' %str(headline))
 	body_content = df['body'];
 	print(len(body_content));
 
@@ -39,7 +41,9 @@ def get_body_lstm_model():
 
 	# prepare tokenizer
 	t = Tokenizer()
-	t.fit_on_texts(body_content)
+	
+	t.fit_on_texts(headline)
+	#t.fit_on_texts(body_content)
 	vocab_size = len(t.word_index) + 1
 
 	# integer encode the documents
