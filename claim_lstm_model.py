@@ -39,6 +39,7 @@ def get_claim_lstm_model():
 
 	# prepare tokenizer
 	t = Tokenizer()
+	#print('claim content is %s ' %str(claim_content))
 	t.fit_on_texts(claim_content)
 	vocab_size = len(t.word_index) + 1
 
@@ -80,7 +81,7 @@ def get_claim_lstm_model():
 	# model_lstm.add(Dropout(0.2))
 	# model_lstm.add(Conv1D(64, 5, activation='relu'))
 	# model_lstm.add(MaxPooling1D(pool_size=4))
-	model_lstm.add(LSTM(100))
+	model_lstm.add(LSTM(50))
 	# activation function = softmax instead of sigmoid since multiclass, sigmoid is for binary class
 	# First parameter of Dense is the unit = number of labels  https://keras.io/layers/core/
 	#model_lstm.add(Dense(4, activation='relu'))

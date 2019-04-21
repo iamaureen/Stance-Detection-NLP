@@ -47,7 +47,8 @@ def get_body_lstm_model():
 	vocab_size = len(t.word_index) + 1
 
 	# integer encode the documents
-	encoded_docs = t.texts_to_sequences(body_content)
+	#encoded_docs = t.texts_to_sequences(body_content)
+	encoded_docs = t.texts_to_sequences(headline)
 	# print(encoded_docs)
 
 	# https://stackoverflow.com/questions/34757703/how-to-get-the-longest-length-string-integer-float-from-a-pandas-column-when-the?rq=1
@@ -78,13 +79,18 @@ def get_body_lstm_model():
 		if embedding_vector is not None:
 			embedding_matrix[i] = embedding_vector
 
+	print('embeding matrix is %s ' %str(embedding_matrix))
+
 	## create the LSTM model
 	model_lstm = Sequential()
 	model_lstm.add(Embedding(vocab_size, 100, input_length=max_length, weights=[embedding_matrix], trainable=False))
 	# model_lstm.add(Dropout(0.2))
 	# model_lstm.add(Conv1D(64, 5, activation='relu'))
 	# model_lstm.add(MaxPooling1D(pool_size=4))
-	model_lstm.add(LSTM(100))
+	#model_lstm.add(LSTM(100))
+
+	model_lstm.add(LSTM(50))	
+
 	# activation function = softmax instead of sigmoid since multiclass, sigmoid is for binary class
 	# First parameter of Dense is the unit = number of labels  https://keras.io/layers/core/
 	#model_lstm.add(Dense(4, activation='relu'))

@@ -78,12 +78,12 @@ def prepare_data_test():
 
 def prepare_data(claims, headlines, labels):
 
-	'''
-	X = np.array([[1, 2], [3, 4], [5, 6], [7, 8] , [9, 10] , [11, 12] , [13, 14] , [15, 16] , [17, 18] , [19, 20]])
-	y = np.array([0, 0, 1, 1 ,0 , 1 , 0, 1 ,0 , 1])
-	'''
 
-	#print('data dimension is %s ' %str(X.shape))
+	print('inital dimension of claim array is %s ' %str(claims.shape))
+
+	print('inital dimension of headline array is %s ' %str(headlines.shape))
+
+	print('inital dimension of labels array is %s ' %str(labels.shape))
 
 	# in the peject we need to divide our data to 3 separate parts. 
 	# 1) Train 0.8
@@ -144,16 +144,6 @@ def prepare_data(claims, headlines, labels):
 	test_labels = labels[test_indices]
 	validation_labels = labels[validation_indices]
 	train_labels = labels[train_indices]
-
-	'''
-	test_data = X[test_indices] 
-	test_labels = y[test_indices]
-	validation_data = X[validation_indices]
-	validation_labels = y[validation_indices]
-	train_data = X[train_indices]
-	train_labels = y[train_indices]
-	'''
-	
 	
 	print('Dimension of test_claims is %s ' %str(test_claims.shape)) 
 	print('Dimension of validation_claims is %s '  %str(validation_claims.shape))
