@@ -18,10 +18,10 @@ def data_preprocessing(source):
     source = source.str.replace("\s\s+" , " ")
     return source
 
-def get_body_lstm_model():
+def get_headline_lstm_model():
 
 	#filename
-	filename = "data/emergent_without_null.csv"
+	filename = "/Users/denizsonmez/Documents/distinct_entries_final.csv"
 
 
 	fields = ['claim','claim_label','body','page_headline','page_position']
@@ -59,18 +59,19 @@ def get_body_lstm_model():
 
 	# https://stackoverflow.com/questions/34757703/how-to-get-the-longest-length-string-integer-float-from-a-pandas-column-when-the?rq=1
 	# get the max length of the body column
-	body_field_length = df.body.astype(str).map(len)
+	headline_field_length = df.page_headline.astype(str).map(len)
 	# print (type(df.loc[claim_field_length.idxmax(), 'claim']))
 	# print (type(df.loc[claim_field_length.idxmin(), 'claim']))
 
-	max_length_str = df.loc[body_field_length.idxmax(), 'body'];
+	max_length_str = df.loc[headline_field_length.idxmax(), 'page_headline'];
 	max_length = len(max_length_str.split());
-
+	print("Max length from headlineLSTM:")
+	print(max_length)
 	padded_page_headline_content = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
 	print(padded_page_headline_content)
 	# load the whole embedding into memory
 	embeddings_index = dict()
-	f = open('/Users/iamaureen/Documents/glove.6B/glove.6B.100d.txt')
+	f = open('/Users/denizsonmez/Downloads/glove.6B/glove.6B.100d.txt')
 	for line in f:
 		values = line.split()
 		word = values[0]
@@ -111,5 +112,5 @@ def get_body_lstm_model():
 	# seq = t.texts_to_sequences(test_txt)
 	# test_body_padded = pad_sequences(seq, maxlen=max_length)
 
-	return padded_page_headline_content, model_lstm,t;
+	return padded_page_headline_content, model_lstm, t;
 

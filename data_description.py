@@ -2,7 +2,7 @@ import pandas as pd
 from collections import Counter
 
 #filename
-filename = "data/emergent.csv"
+filename = "/Users/denizsonmez/Documents/distinct_entries.csv"
 
 
 fields = ['claim','claim_label','body','page_headline','page_position']

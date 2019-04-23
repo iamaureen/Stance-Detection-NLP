@@ -10,12 +10,12 @@ import headline_lstm_model as bm
 
 def combine_lstm():
     padded_claim_content, claim_model, label,claim_tokenizer = cm.get_claim_lstm_model();
-    padded_body_content, body_model, body_tokenizer = bm.get_body_lstm_model();
+    padded_headline_content, headline_model, headline_tokenizer = bm.get_headline_lstm_model();
 
     # #https://stackoverflow.com/questions/51075666/how-to-implement-merge-from-keras-layers
     # merged_output = add([claim_model.output, body_model.output])
 
-    merged_output = concatenate([claim_model.output, body_model.output])
+    merged_output = concatenate([claim_model.output, headline_model.output])
 
     model_combined = Sequential()
     model_combined.add(Activation('relu'))
@@ -24,13 +24,13 @@ def combine_lstm():
     model_combined.add(Dense(4))
     model_combined.add(Activation('softmax'))
 
-    final_model = Model([claim_model.input, body_model.input], model_combined(merged_output))
+    final_model = Model([claim_model.input, headline_model.input], model_combined(merged_output))
 
     final_model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     # print(final_model.summary())
 
-    final_model.fit([padded_claim_content, padded_body_content], label, validation_split=0.4, epochs=10)
+    final_model.fit([padded_claim_content, padded_headline_content], label, validation_split=0.4, epochs=10)
 
     print(final_model.summary())
 
@@ -40,7 +40,7 @@ def combine_lstm():
     # pred = intermediate_layer_model.predict([test_claim_padded,test_body_padded])
     # print(pred.shape)
 
-    loss, accuracy = final_model.evaluate([padded_claim_content, padded_body_content], label, verbose=0)
+    loss, accuracy = final_model.evaluate([padded_claim_content, padded_headline_content], label, verbose=0)
     print('Accuracy: %f' % (accuracy*100))
 
     #testing. using a different sentence for texts_to_sequences (follow the stackoverflow link above)
@@ -50,7 +50,7 @@ def combine_lstm():
     # labels = ['0', '1', '2', '3']
     # print(pred, labels[np.argmax(pred)])
 
-    return claim_tokenizer, body_tokenizer, final_model;
+    return claim_tokenizer, headline_tokenizer, final_model;
 
 
 
