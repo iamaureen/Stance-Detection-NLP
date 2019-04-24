@@ -5,7 +5,6 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model
 from sklearn.dummy import DummyClassifier
 
-
 import pandas as pd
 
 import merge_lstm
@@ -16,7 +15,7 @@ fields = ['claim','claim_label','body','page_headline','page_position']
 
 df = pd.read_csv(filename, usecols=fields)
 
-df = df.sample(n=500)
+#df = df.sample(n=500)
 
 claim_content = df['claim'];
 headline_content = df['page_headline'];
@@ -29,8 +28,8 @@ labels=labels.astype('int')
 
 #get max length claim
 claim_field_length = df.claim.astype(str).map(len)
-max_length_str = df.loc[claim_field_length.idxmax(), 'claim'];
-max_length_claim = len(max_length_str.split());
+max_length_str = df.loc[claim_field_length.idxmax(), 'claim']
+max_length_claim = len(max_length_str.split())
 
 
 #get max length headline
@@ -39,6 +38,8 @@ max_length_str = df.loc[headline_field_length.idxmax(), 'page_headline'];
 max_length_headline= len(max_length_str.split());
 print("Max headline length from fake news class:")
 print(max_length_headline)
+#debug
+max_length_headline = 31
 
 #get the two tokenizer for claim and body, also get the intermediate value from the training current dimension 200
 claim_tokenizer, headline_tokenizer, final_model = merge_lstm.combine_lstm()
@@ -67,12 +68,3 @@ y_pred = logistic_model.predict(X_test)
 acc = accuracy_score(y_test, y_pred)
 print("Logistic Regression: Accuracy on the current dataset(80-20 rule): {:.2f}".format(acc*100))
 print("Logistic Regression: F1 Score", f1_score(y_test, y_pred, average="macro"))
-
-# majority vote
-# dummy = DummyClassifier(strategy="most_frequent") #most_frequent
-# dummy.fit(X_train, y_train)
-#
-# dummy_y_pred = dummy.predict(X_test)
-# dummy_acc = accuracy_score(y_test, dummy_y_pred)
-# print("Majority Vote: Accuracy on the current dataset(80-20 rule): {:.2f}".format(dummy_acc*100))
-# print("Majority Vote: F1 Score", f1_score(y_test, dummy_y_pred, average="macro"))

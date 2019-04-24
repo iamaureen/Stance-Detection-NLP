@@ -32,6 +32,9 @@ df.loc[df['page_position'] == 'against', 'page_position'] = 1
 df.loc[df['page_position'] == 'observing', 'page_position'] = 2
 df.loc[df['page_position'] == 'ignoring', 'page_position'] = 3
 
+df.loc[df['claim_label'] == 'TRUE', 'claim_label'] = 0
+df.loc[df['claim_label'] == 'FALSE', 'claim_label'] = 1
+df.loc[df['claim_label'] == 'Unverified', 'claim_label'] = 2
 
 df = shuffle(df)
 
@@ -59,7 +62,9 @@ print('features_bow_combined',features_bow_combined.shape)
 tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l1', encoding='latin-1', ngram_range=(1,3), stop_words='english')
 features_tfidf_claim = tfidf.fit_transform(df.claim).toarray();
 features_tfidf_headline = tfidf.fit_transform(df.page_headline).toarray();
-labels = df.page_position
+
+# IMPORTANT: changed to claim label from stance
+labels = df.claim_label
 labels=labels.astype('int')
 print('features_bow_claim',features_tfidf_claim.shape)
 print('features_bow_headline',features_tfidf_headline.shape)
@@ -107,6 +112,6 @@ print("Accuracy on the current dataset(cross validation rule (dummy)): {:.2f}".f
 accuracies = cross_val_score(DummyClassifier(strategy="most_frequent"), features_tfidf_combined, labels, scoring='f1_macro', cv=CV)
 print("F1 Measure on the current dataset(cross validation rule (dummy)): {:.2f}".format(accuracies.mean()))
 
-print("T test results comparing majority vote and logistic regression baselines")
-print(ttest_rel(accuracies1, accuracies2))
+# print("T test results comparing majority vote and logistic regression baselines")
+# print(ttest_rel(accuracies1, accuracies2))
 
